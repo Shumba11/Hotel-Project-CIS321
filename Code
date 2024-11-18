@@ -1,0 +1,202 @@
+I had to use vs code to write this part due to my lack of knowledge using github. 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Reservation System</title>
+    <style>
+        /* Basic Reset: Applies default styles to all elements */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Styling for the body of the page */
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container for sections */
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        /* General section styling */
+        .section {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+        }
+
+        /* Form input styling */
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #dcdde1;
+            border-radius: 8px;
+            font-size: 1em;
+            background-color: #f5f6f7;
+        }
+
+        /* Button styling */
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Room item styling for management display */
+        .room-item {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Responsive styling for smaller screens */
+        @media (max-width: 768px) {
+            .section {
+                max-width: 90%;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main container with login sections -->
+    <div class="container">
+        <!-- Customer Login Section -->
+        <div class="section">
+            <h2>Customer Login</h2>
+            <form id="loginForm">
+                <label>Username</label><input type="text" id="loginUsername" required>
+                <label>Password</label><input type="password" id="loginPassword" required>
+                <button type="submit">Login</button>
+                <!-- Link to show the registration form -->
+                <a class="link" onclick="showRegistrationForm()">Create Account</a>
+            </form>
+        </div>
+
+        <!-- Employee Login Section -->
+        <div class="section">
+            <h2>Employee Login</h2>
+            <form id="employeeLoginForm">
+                <label>Username</label><input type="text" id="employeeUsername" value="User1" readonly>
+                <label>Password</label><input type="password" id="employeePassword" required>
+                <button type="submit">Login as Employee</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Form Section -->
+    <div id="registrationSection" class="section" style="display: none;">
+        <h2>Create New Account</h2>
+        <form id="registrationForm">
+            <label>Username</label><input type="text" id="regUsername" required>
+            <label>Email</label><input type="email" id="regEmail" required>
+            <label>Phone Number</label><input type="tel" id="regPhone" required>
+            <label>Password</label><input type="password" id="regPassword" required>
+            <button type="submit">Register</button>
+            <a class="link" onclick="showLoginForm()">Already have an account? Log in</a>
+        </form>
+    </div>
+
+    <!-- Additional sections for bookings, confirmations, and admin functionality -->
+    <!-- Booking Section -->
+    <div id="bookingSection" class="section" style="display: none;">
+        <h2>Book a Room</h2>
+        <form id="bookingForm">
+            <!-- Room selection dropdown -->
+            <label>Select Room</label>
+            <select id="bookingRoom" required>
+                <option value="Single">Single - $100/night</option>
+                <option value="Double">Double - $150/night</option>
+                <option value="Suite">Suite - $250/night</option>
+            </select>
+            <!-- Date input fields -->
+            <label>Check-in Date</label><input type="date" id="checkinDate" required>
+            <label>Check-out Date</label><input type="date" id="checkoutDate" required>
+            <!-- Payment details -->
+            <label>Credit Card Number</label><input type="text" id="cardNumber" required>
+            <label>Expiry Date</label><input type="text" id="expiryDate" required>
+            <label>CVV</label><input type="text" id="cvv" required>
+            <button type="submit">Book Room</button>
+        </form>
+    </div>
+
+    <script>
+        // Room data array to manage room information
+        const rooms = [
+            { size: 'Single', cost: 100, capacity: 1, isBooked: false },
+            { size: 'Double', cost: 150, capacity: 2, isBooked: true },
+            { size: 'Suite', cost: 250, capacity: 4, isBooked: false }
+        ];
+
+        // Function to display the registration form
+        function showRegistrationForm() {
+            document.querySelector('.container').style.display = 'none';
+            document.getElementById('registrationSection').style.display = 'block';
+        }
+
+        // Function to show the login form
+        function showLoginForm() {
+            document.getElementById('registrationSection').style.display = 'none';
+            document.querySelector('.container').style.display = 'flex';
+        }
+
+        // Function to handle customer registration
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            // Save user data to localStorage
+            localStorage.setItem(username, JSON.stringify({ email, phone, password }));
+            alert("Account created successfully!");
+            showBookingPage();
+            document.getElementById('registrationForm').reset();
+        });
+
+        // Other event listeners and helper functions omitted for brevity
+    </script>
+</body>
+</html>
